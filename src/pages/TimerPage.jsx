@@ -3,6 +3,13 @@ import TimeButton from '../components/TimeButton';
 import { useState,} from 'react';
 
 
+var startTime
+
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
 const TimerPage = () => {
     // get element by id btn
@@ -10,18 +17,13 @@ const TimerPage = () => {
 
     const [color, setColor] = useState('bg-azul');
     //make random number between 2 and 7
-    const [randomNumber, setRandomNumber] = useState(0);
     const [time, setTime] = useState(0)
     const [message, setMessage] = useState('Empezar')
-    const [intervalID, setIntervalID] = useState();
+    const [intervalID, setIntervalID] = useState(0);
     const [step, setStep] = useState(0);
-    const [firstTime, setFirstTime] = useState(Date.now());
-
-    var startTime
 
     function timestart(){
-        setFirstTime()
-        startTime = firstTime
+        startTime = Date.now();
 
         setIntervalID(setInterval(function(){
             setTime(Date.now() - startTime);
@@ -34,36 +36,32 @@ const TimerPage = () => {
         clearInterval(intervalID);
     }
     
-    var time1 = firstTime
-
-    const handleClick = () => {        
+    const handleClick = () => {      
         if (step === 0) {
             timestop();
-            // setRandomNumber() to make random number between 2 and 7;
-            setRandomNumber(Math.floor(Math.random() * (7 - 2 + 1)) + 2);
-            console.log(randomNumber);
+            let randomNumber = getRandomInt(2,7);
             setColor('bg-slate-300 color-black');
             setMessage('Esperar');
-            setStep(1);
             setTimeout(() => {
-                timestop();
-                timestart();
                 setMessage('¡Listo!');
                 setColor("bg-green")
+                setStep(1);
+                timestart();
             }, randomNumber * 1000);    
         } else if (step === 1) {
             timestop();
-            setTime(Date.now() - time1);
+            setTime(Date.now() - startTime);
             setStep(2);
+            timestop();
         } else if (step === 2) {
             timestop();
+            setStep(0);
             setTime(0);
             setColor('bg-azul');
-            setStep(0);
             setMessage('Empezar');
+            timestop();
         }
-    }     
-
+    }
     return (
         <div className="flex gap-3 flex-col items-center p-10 justify-center h-full">
             <div className='flex flex-col items-center'>
